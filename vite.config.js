@@ -1,12 +1,14 @@
+
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
-import { base44Plugin as base44 } from '@base44/vite-plugin'
 
 // https://vite.dev/config/
 export default defineConfig({
-  logLevel: 'error',
+  logLevel: 'error', // Suppress warnings, only show errors
   plugins: [
     base44({
+      // Support for legacy code that imports the base44 SDK with @/integrations, @/entities, etc.
+      // can be removed if the code has been updated to use the new SDK imports from @base44/sdk
       legacySDKImports: process.env.BASE44_LEGACY_SDK_IMPORTS === 'true',
       hmrNotifier: true,
       navigationNotifier: true,
@@ -14,27 +16,5 @@ export default defineConfig({
       visualEditAgent: true
     }),
     react(),
-  ],
-  build: {
-    outDir: 'dist',
-    sourcemap: false,
-    minify: 'terser',
-    rollupOptions: {
-      output: {
-        manualChunks: {
-          'vendor': ['react', 'react-dom', 'react-router-dom'],
-          'ui': ['@radix-ui/react-dialog', '@radix-ui/react-dropdown-menu'],
-        }
-      }
-    }
-  },
-  server: {
-    port: 3000,
-    strictPort: false,
-    open: false,
-  },
-  preview: {
-    port: 4173,
-    strictPort: false,
-  }
+  ]
 });
